@@ -4,6 +4,9 @@
 Created on Mon Oct 16 21:30:47 2023
 
 @author: andre
+
+Nessa parte do algoritmo executa separadamente do app,
+pois aqui vou executar o algoritmo 30 vezes para pegar reslultados
 """
 
 import random 
@@ -15,7 +18,6 @@ from coletor import Coletor_palavras
 
 class Criar_crossly:
     def __init__(self, palavras, x_grade, y_grade):
-      #grade = [[' ' for _ in range(15)] for _ in range(10)]
       self._grade = np.array([[' ' for _ in range(y_grade)] for _ in range(x_grade)])
       self._x_grade = x_grade
       self._y_grade = y_grade
@@ -99,10 +101,14 @@ class Criar_crossly:
       x = (self._x_grade-1) // 2#random.randint(0, self._x_grade-1)
       y = (self._y_grade-1)//2#random.randint(0, self._y_grade-1)
       direcao = random.choice(['horizontal', 'vertical'])
-      #random.shuffle(palavras)
-      #palavras = self.reordenar(self._lista_de_palavras)
+      
+      #Executar por maiores palavras
       palavras = sorted(self._lista_de_palavras.copy(), key=len, reverse=True)
+      
+      #Executar por aleatoriedade
       #palavras = sorted(self._lista_de_palavras.copy())
+      
+      #Executar por palavras que tem mais vogais
       #palavras = self.reordenar_por_vogais(self._lista_de_palavras.copy())
       palavra = palavras.pop(0)
 
@@ -125,11 +131,9 @@ class Criar_crossly:
                       if tem_interseccao:
                         if self.cabe_a_palavra(palavra, x, y, direcao):
                           coordenadas = self.inserir_palavra(palavra, x, y, direcao)
-                          #self._palavras_inseridas.append(palavra)
                           self._palavras_inseridas[coordenadas] = palavra
                           encontrada = True
                           total_pontos += pontos
-                          #print('inserida: ', palavra)
                           break
                       else:
                         pontos = 0
@@ -137,10 +141,6 @@ class Criar_crossly:
     
               if not encontrada:
                 self._palavras_nao_inseridas.append(palavra)
-                #print('naõ encontrada: ', palavra)
-                #palavras.append(palavra)
-
-      #total_points = calculate_total_points(palavras_inseridas)
 
       return self._grade, total_pontos, self._palavras_nao_inseridas, len(self._palavras_inseridas), self._palavras_inseridas
   
@@ -222,8 +222,10 @@ class Gerar_grade:
           self.salvar_reesecucao.append(self.__quant_grade_resetado)
           self.salvar_grade_x.append(self.__x_grade)
           self.salvar_grade_y.append(self.__y_grade)
+          
+          #Parar algoritmo quando executar 30 vezes
           if contar >= 30:
-              print('saindo')
+              print('Finalizado')
               break 
     @property
     def y_grade(self):
@@ -265,9 +267,17 @@ if __name__ == '__main__':
     base_de_dados_palavras = coletor.coletar()
     grade = Gerar_grade(20,base_de_dados_palavras)
     grade.gerar()
+    
+    #vai executar a grade da ultima execução
     for linha in grade.grade_caca_palavras:
         print('|','{}|'.format(' '.join(linha)))
 
+    #Coletar os resultados das 30 execuções do codigo
+    #fazer o texto para cada uma das opções, executar por
+    #maiores palavras
+    #aleatorieade
+    #por palavras com maiores vogais
+    #Essa definição é feita na linha 106 onde define quais metodos usar
     dicio = dict()
     dicio['tempo'] = grade.salvar_tempo
     dicio['reesecucao'] = grade.salvar_reesecucao
