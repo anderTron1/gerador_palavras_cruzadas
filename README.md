@@ -34,5 +34,3 @@ Exemplo de Resultados:
         Média do Tempo: 0.7140 segundos
         Soma de Reexecuções: 1
         Média da Grade: 24x19
-
-![resultados](resultados\ 30\ excusao\ palavra\ 20\ letra/resultados_30_execucoes_20_palavras.png)
