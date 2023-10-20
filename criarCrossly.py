@@ -15,7 +15,6 @@ from datetime import datetime
 
 class Criar_crossly:
     def __init__(self, palavras, x_grade, y_grade):
-      #grade = [[' ' for _ in range(15)] for _ in range(10)]
       self._grade = np.array([[' ' for _ in range(y_grade)] for _ in range(x_grade)])
       self._x_grade = x_grade
       self._y_grade = y_grade
@@ -42,20 +41,11 @@ class Criar_crossly:
         cont = 0
         pontos_interseccao = 0
         if direcao == 'horizontal':
-            #for i in range(len(palavra)):
-            #    #if grade[x][y+i] != ' ' and
-            #    #if grade[x][y+i] != ' ':
-            #      if grade[x][y+i] == palavra[i]:
-            #        cont += 1
           conjunto = ''.join(map(str,set(self._grade[x, y:y+len(palavra)-1]) & set(palavra)))
           pontos_interseccao = len(conjunto)#self.calculate_word_points(conjunto)
           cont = len(conjunto)
+          
         elif direcao == 'vertical':
-          #for i in range(len(palavra)):
-          #    #if grade[x+i][y] != ' ' and grade[x+i][y] != palavra[i]:
-          #    #if grade[x+i][y] != ' ':
-          #      if grade[x+i][y] == palavra[i]:
-          #        cont += 1
           conjunto = ''.join(map(str,set(self._grade[x:x+len(palavra)-1, y]) & set(palavra)))
           pontos_interseccao = len(conjunto)#self.calculate_word_points(conjunto)
           cont = len(conjunto)
@@ -70,14 +60,12 @@ class Criar_crossly:
         for i in range(len(palavra)):
           if self._grade[x][y+i] != ' ' and self._grade[x][y+i] != palavra[i]:
             return False
-        #if str(grade[x, y:y+len(palavra)]) != palavra and ''.join(str(grade[x, y:y+len(palavra)])) != ' ':
-        #   return False
+        
       elif direcao == 'vertical':
         for i in range(len(palavra)):
           if self._grade[x+i][y] != ' ' and self._grade[x+i][y] != palavra[i]:
             return False
-        #if str(grade[x:x+len(palavra), y]) != palavra and ''.join(str(grade[x:x+len(palavra), y]) ) != ' ':
-        #   return False
+        
       return True
   
     #inserir a palavra na grade
@@ -99,10 +87,13 @@ class Criar_crossly:
       x = (self._x_grade-1) // 2#random.randint(0, self._x_grade-1)
       y = (self._y_grade-1)//2#random.randint(0, self._y_grade-1)
       direcao = random.choice(['horizontal', 'vertical'])
-      #random.shuffle(palavras)
-      #palavras = self.reordenar(self._lista_de_palavras)
+      #Executar por maiores palavras
       palavras = sorted(self._lista_de_palavras.copy(), key=len, reverse=True)
+      
+      #Executar por aleatoriedade
       #palavras = sorted(self._lista_de_palavras.copy())
+      
+      #Executar por palavras que tem mais vogais
       #palavras = self.reordenar_por_vogais(self._lista_de_palavras.copy())
       palavra = palavras.pop(0)
 
@@ -125,22 +116,15 @@ class Criar_crossly:
                       if tem_interseccao:
                         if self.cabe_a_palavra(palavra, x, y, direcao):
                           coordenadas = self.inserir_palavra(palavra, x, y, direcao)
-                          #self._palavras_inseridas.append(palavra)
                           self._palavras_inseridas[coordenadas] = palavra
                           encontrada = True
                           total_pontos += pontos
-                          #print('inserida: ', palavra)
                           break
                       else:
                         pontos = 0
     
-    
               if not encontrada:
                 self._palavras_nao_inseridas.append(palavra)
-                #print('naõ encontrada: ', palavra)
-                #palavras.append(palavra)
-
-      #total_points = calculate_total_points(palavras_inseridas)
 
       return self._grade, total_pontos, self._palavras_nao_inseridas, len(self._palavras_inseridas), self._palavras_inseridas
   
