@@ -28,4 +28,4 @@ Média do Tempo: 0.7140000000000001
 Soma de Reesecução: 1
 media da Grade: 24x19
 
-![resultados do tempo de execução]("resultados\ 30\ excusao\ palavra\ 20\ letra/resultados_30_execucoes_20_palavras.png")
+![resultados do tempo de execução]("resultados 30 excusao palavra 20 letra/resultados_30_execucoes_20_palavras.png")
