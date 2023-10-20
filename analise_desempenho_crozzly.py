@@ -11,7 +11,7 @@ import numpy as np
 import time
 from datetime import datetime
 
-#from coletor import Coletor_palavras
+from coletor import Coletor_palavras
 
 class Criar_crossly:
     def __init__(self, palavras, x_grade, y_grade):
@@ -162,29 +162,43 @@ class Gerar_grade:
         self.__palavras_inseridas = None
         self.__pontos_no_aumento_grade = []
         self.__inseridas_no_aumento_grade = []
+        self.salvar_tempo = []
+        self.salvar_reesecucao = []
+        self.salvar_grade_x = []
+        self.salvar_grade_y = []
+	
         
     def gerar(self):
-        self.__inicio_tempo  = time.time()#datetime.now()
-        inicio_para_reset = time.time()#datetime.now()
-        
-        #tratar a variavel error
-        erro, palavras_filtradas = self.__classe_coletor#.coletar()
-        
-        random.shuffle(palavras_filtradas)
+        contar = 0
+        while True:
+          self.__palavras = []
+          self.__y_grade = 10
+          self.__x_grade = 15
+          self.__n_palavras_inseridas =0
+          self.__grade_caca_palavras = 0
+          self.__quant_grade_resetado = 0
+          self.__inicio_tempo = 0
+          self.__fim_tempo = 0
+          self.__palavras_inseridas = None
+          self.__pontos_no_aumento_grade = []
+          self.__inseridas_no_aumento_grade = []
+          self.__inicio_tempo  = time.time()#datetime.now()
+          inicio_para_reset = time.time()#datetime.now()
 
-        for cont, palavra in enumerate(palavras_filtradas):
+          #tratar a variavel error
+          erro, palavras_filtradas = self.__classe_coletor#.coletar()
+
+          random.shuffle(palavras_filtradas)
+
+          for cont, palavra in enumerate(palavras_filtradas):
             if cont+1 <= self.__quant_palavras:
               self.__palavras.append(palavra)
             else:
               break
-          
-        pontos = 0
-        tentativas = 0
-        
-        cont_intersecoes = 0
-        
-        
-        while True:
+          pontos = 0
+          tentativas = 0        
+          cont_intersecoes = 0
+          while True:
             palavra = self.__palavras.copy()
             criando = Criar_crossly(palavra, self.__y_grade, self.__x_grade)
             self.__grade_caca_palavras, pontos, palavras_nao_inseridas, self.__n_palavras_inseridas, self.__palavras_inseridas = criando.iniciar()
@@ -194,15 +208,23 @@ class Gerar_grade:
             if pontos != 0 and self.__n_palavras_inseridas >= self.__quant_palavras:
               break
             elif (time.time() - inicio_para_reset) > 10:
-              inicio_para_reset = time.time()
-              self.__quant_grade_resetado += 1
-              self.__y_grade = 10
-              self.__x_grade = 15
+                inicio_para_reset = time.time()
+                self.__quant_grade_resetado += 1
+                self.__y_grade = 10
+                self.__x_grade = 15
             else: 
-              self.__y_grade += 1
-              self.__x_grade += 1
-        self.__fim_tempo = time.time()
-        
+                self.__y_grade += 1
+                self.__x_grade += 1
+          self.__fim_tempo = time.time()
+          contar +=1
+          print(contar)
+          self.salvar_tempo.append(round(self.__fim_tempo-self.__inicio_tempo,2))
+          self.salvar_reesecucao.append(self.__quant_grade_resetado)
+          self.salvar_grade_x.append(self.__x_grade)
+          self.salvar_grade_y.append(self.__y_grade)
+          if contar >= 30:
+              print('saindo')
+              break 
     @property
     def y_grade(self):
         return self.__y_grade
@@ -236,11 +258,24 @@ class Gerar_grade:
     @property
     def inseridas_no_aumento_grade(self):
         return self.__inseridas_no_aumento_grade
-    
-#if __name__ == '__main__':
-#    coletor = Coletor_palavras('https://www.ime.usp.br/~pf/dicios/br-sem-acentos.txt',10)
-#    base_de_dados_palavras = coletor.coletar()
-#    grade = Gerar_grade(20,base_de_dados_palavras)
-#    grade.gerar()
-#    for linha in grade.grade_caca_palavras:
-#        print('|','{}|'.format(' '.join(linha)))
+
+import pandas as pd
+if __name__ == '__main__':
+    coletor = Coletor_palavras('https://www.ime.usp.br/~pf/dicios/br-sem-acentos.txt',10)
+    base_de_dados_palavras = coletor.coletar()
+    grade = Gerar_grade(20,base_de_dados_palavras)
+    grade.gerar()
+    for linha in grade.grade_caca_palavras:
+        print('|','{}|'.format(' '.join(linha)))
+
+    dicio = dict()
+    dicio['tempo'] = grade.salvar_tempo
+    dicio['reesecucao'] = grade.salvar_reesecucao
+    dicio['grade_x'] = grade.salvar_grade_x
+    dicio['grade_y'] = grade.salvar_grade_y
+    df_analitico = pd.DataFrame(dicio)
+    df_analitico.to_csv('por_palavra_maiores_20.csv', index=False)
+    print('Execução 30 veses por palavras maiores 20 palavras')
+    print('Tempo:', df_analitico['tempo'].mean())
+    print('Soma de Reesecução:', df_analitico['reesecucao'].sum())
+    print('media da Grade: {}x{}'.format(int(df_analitico['grade_x'].mean()), int(df_analitico['grade_y'].mean())))
