@@ -1,7 +1,7 @@
 Gerador de Palavras Cruzadas
 
 Descrição:
-O projeto Gerador de Palavras Cruzadas é um sistema que gera palavras cruzadas com base em um conjunto de palavras. O sistema é composto por vários componentes, incluindo:
+O projeto Gerador de Palavras Cruzadas é um sistema que gera palavras cruzadas com base em um conjunto de palavras que tenta resolver o crozzely. O sistema é composto por vários componentes, incluindo:
 
     app.py:
         Este arquivo é responsável por iniciar o servidor em Flask usando o pacote Dash. Ele também lida com a geração de gráficos interativos para interação com o usuário.
